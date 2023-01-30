@@ -101,7 +101,7 @@ export default function Looper() {
             onChange={handleInputUrl}
             />
             <button
-            className="rounded m-3 px-4 bg-violet-400 hover:bg-violet-500"
+            className="rounded m-3 px-4 bg-sky-300 hover:bg-sky-400"
             onClick={loadUrl}>
                 <ArrowDownIcon className="h-6 w-6 font-bold text-white"/>
             </button>
