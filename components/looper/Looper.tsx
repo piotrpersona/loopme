@@ -19,7 +19,7 @@ export default function Looper() {
     }, []);
 
     var capture = e => {
-        if (breakpoints.length > MAX_BREAKPOINTS) {
+        if (breakpoints.length > MAX_BREAKPOINTS-1) {
             alert(`Cannot create more than ${MAX_BREAKPOINTS} breakpoints`)
             return
         }
@@ -83,7 +83,7 @@ export default function Looper() {
 
   return (
     <main className="space-y-12 mx-4 md:mx-24 flex flex-row">
-      <section className="mx-8 px-4 border-r-2">
+      <section className="mx-4 px-4 border-r-2">
         <div className="flex my-4">
             <input
             className="w-full my-3 rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
@@ -116,19 +116,20 @@ export default function Looper() {
         )}
       </div>
       </section>
-      <section className="mx-8 px-8">
+      <section className="mx-4 px-4">
         <section>
-            <div>
-                <p className="text-xl py-2">Manual</p>
+            <div className="my-4">
+                <h2 className="text-2xl py-2">Manual</h2>
                 <ol className="list-decimal">
                     {
                         [
                             'Play the video',
                             'Click "capture" to add new breakpoint',
                             'Click "play" to start the video from selected breakpoint',
-                            'Click "remove" to delete breakpoint or "clear" to delete all breakpoints'
-                        ].map(text => (
-                            <li className="py-1">
+                            'Click "remove" to delete breakpoint or "clear" to delete all breakpoints',
+                            'Use player to navigate the video'
+                        ].map((text,index) => (
+                            <li key={index} className="py-1">
                                 {text}
                             </li>
                         ))
@@ -147,15 +148,16 @@ export default function Looper() {
             </button>
         </section>
         <hr className="my-7"></hr>
-        <section className="mx-8 px-8">
-        {breakpoints.map(breakpoint => {
+        <section className="mx-4 px-4">
+        {breakpoints.map((breakpoint, index) => {
             const time = msToTime(Math.floor(breakpoint.time * 1000));
             return (
                 <div key={breakpoint.id} className="flex mx-4 py-2">
+                    <p className="text-gray-700 py-2 px-4">{index+1}.</p>
                     <input
                         type="text"
                         placeholder="breakpoint name..."
-                        className="font-light text-gray-400 py-2 px-4 border border-blue-300"
+                        className="font-light text-gray-400 py-2 px-4 border border-[#e0e0e0] rounded-md"
                     />
                     <p className="font-light text-gray-400 py-2 px-4">{time}</p>
                     <button
