@@ -33,6 +33,7 @@ export default function Looper() {
         const breakpoint = {
             id: id,
             time: time,
+            name: '',
         }
         setBreakpoints((prev) => [...prev, breakpoint])
     }
@@ -65,6 +66,33 @@ export default function Looper() {
 
     var loadUrl = (e) => {
         setUrl(inputUrl)
+    }
+
+    var setBreakpointName = (id) => {
+        return (e) => {
+            e.preventDefault()
+            for (var i = 0; i < breakpoints.length; i++) {
+                var b = breakpoints[i]
+                if (b.id != id) {
+                    continue
+                }
+                b.name = e.target.value
+            }
+            setBreakpoints(breakpoints)
+        }
+    }
+
+    var share = (e) => {
+        var query = new URLSearchParams(window.location.href);
+        var params = {
+            url: url,
+            breakpoints: breakpoints.map(b => `${b.name}-${b.time}`).join(','),
+        }
+        for (const key in params) {
+            query.set(key, params[key])
+        }
+
+        console.log(query.toString())
     }
 
     var handleInputUrl = (e) => setInputUrl(e.target.value)
@@ -136,6 +164,11 @@ export default function Looper() {
                 onClick={clear}>
                 clear
             </button>
+            <button
+                className="rounded ml-4 py-2 px-4 bg-transparent border text-emerald-400 border-emerald-400"
+                onClick={share}>
+                share
+            </button>
         </section>
         <hr className="my-7"></hr>
         <section className="mx-4 px-4">
@@ -148,6 +181,8 @@ export default function Looper() {
                         type="text"
                         placeholder="breakpoint name..."
                         className="font-light py-2 px-4"
+                        // value={breakpoint.name}
+                        onChange={setBreakpointName(breakpoint.id)}
                     />
                     <p className="font-light text-gray-400 py-2 px-4">{time}</p>
                     <button
