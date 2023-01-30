@@ -201,7 +201,7 @@ export default function Looper() {
             <div className="m-2 flex">
                 <input className="font-light text-gray-500 py-2 px-4 border border-sky-300 rounded-l" type="text" value={shareUrl}/>
                 <button
-                    className="rounded-r py-2 px-4 bg-transparent border border-sky-300 bg-sky-300 hover:border-sky-400 hover:bg-sky-400"
+                    className="rounded-r py-2 px-4 bg-sky-300 border border-sky-300 bg-sky-300 hover:border-sky-400 hover:bg-sky-400"
                     onClick={share}>
                     {copied ? <CheckIcon className="h-6 w-6 text-white"/> : <DocumentDuplicateIcon className="h-6 w-6 text-white" />}
                 </button>
