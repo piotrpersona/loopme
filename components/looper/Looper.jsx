@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid';
 const MAX_BREAKPOINTS = 20
 
 export default function Looper() {
-    var ref = React.createRef(null)
+    var ref = React.createRef()
 
     const [url, setUrl] = useState('https://www.youtube.com/watch?v=08nggMRgCFI')
     const [inputUrl, setInputUrl] = useState('')
@@ -18,7 +18,10 @@ export default function Looper() {
         setDomLoaded(true);
     }, []);
 
-    var capture = e => {
+    var capture = (e) => {
+        if (player === null) {
+            return
+        }
         if (breakpoints.length > MAX_BREAKPOINTS-1) {
             alert(`Cannot create more than ${MAX_BREAKPOINTS} breakpoints`)
             return
@@ -29,28 +32,28 @@ export default function Looper() {
             id: id,
             time: time,
         }
-        setBreakpoints(prev => [...prev, breakpoint])
+        setBreakpoints((prev) => [...prev, breakpoint])
     }
 
-    ref = reactPlayer => {
+    ref = (reactPlayer) => {
         setPlayer(reactPlayer)
     }
 
-    var playFrom = time => {
+    var playFrom = (time) => {
         return (e) => {
             player.seekTo(time)
             player.playing = true
         }
     }
 
-    var remove = id => {
+    var remove = (id) => {
         return (e) => {
             const updated = breakpoints.filter((item) => item.id !== id)
             setBreakpoints(updated)
         }
     }
 
-    var clear = e => {
+    var clear = (e) => {
         setBreakpoints([])
     }
 
@@ -75,7 +78,7 @@ export default function Looper() {
         return `${minutes}:${seconds}.${milliseconds-seconds*1000}`
     }
 
-    var loadUrl = e => {
+    var loadUrl = (e) => {
         setUrl(inputUrl)
     }
 
