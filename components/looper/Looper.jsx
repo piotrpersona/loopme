@@ -122,8 +122,8 @@ export default function Looper() {
 
   return (
     <main className="space-y-12 mx-4 md:mx-24 flex flex-row">
-      <section className="mx-4 px-4 border-r-2">
-        <h2 className="text-2xl pt-8">Paste YouTube URL</h2>
+      <section className="mx-4 mt-8 px-4 border-r-2">
+        <h2 className="text-2xl">Paste YouTube URL</h2>
         <div className="flex my-4">
             <input
             className="w-full my-3 rounded-md border border-[#e0e0e0] py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
@@ -139,44 +139,42 @@ export default function Looper() {
             </button>
         </div>
         <div>
-        {domLoaded && (
-            <ReactPlayer
-            url={url}
-            ref={ref}
-            width='600px'
-            height='400px'
-            controls={true}
-            playing={true}
-            loop={true}
-            config={{
-                youtube: {
-                  playerVars: { autoplay: 1 }
-                },
-              }}
-            />
-        )}
-      </div>
+            {domLoaded && (
+                <ReactPlayer
+                url={url}
+                ref={ref}
+                width='600px'
+                height='400px'
+                controls={true}
+                playing={true}
+                loop={true}
+                config={{
+                    youtube: {
+                    playerVars: { autoplay: 1 }
+                    },
+                }}
+                />
+            )}
+        </div>
       </section>
-      <section className="mx-4 px-4">
-        <section className="my-2">
-            <div className="my-4">
-                <h2 className="text-2xl py-2">Manual</h2>
-                <ol className="list-decimal">
-                    {
-                        [
-                            'Play the video',
-                            'Click "capture" to add new breakpoint',
-                            'Click play button to start the video from selected breakpoint',
-                            'Click trash can button to delete breakpoint or "clear" to delete all breakpoints',
-                            'Use player to navigate the video'
-                        ].map((text,index) => (
-                            <li key={index} className="py-1">
-                                {text}
-                            </li>
-                        ))
-                    }
-                </ol>
-            </div>
+      <section className="mx-4 mt-8 px-4">
+        <section className="">
+            <h2 className="text-2xl py-2">Manual</h2>
+            <ol className="list-decimal">
+                {
+                    [
+                        'Play the video',
+                        'Click "capture" to add new breakpoint',
+                        'Click play button to start the video from selected breakpoint',
+                        'Click trash can button to delete breakpoint or "clear" to delete all breakpoints',
+                        'Use player to navigate the video'
+                    ].map((text,index) => (
+                        <li key={index} className="py-1">
+                            {text}
+                        </li>
+                    ))
+                }
+            </ol>
         </section>
         <hr className="my-7"></hr>
         <section className="my-2">
@@ -236,7 +234,7 @@ export default function Looper() {
                 </div>
             )
         })}
-      </section>
+        </section>
       </section>
     </main>
   )
