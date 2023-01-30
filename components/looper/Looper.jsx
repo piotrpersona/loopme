@@ -3,7 +3,7 @@ import ReactPlayer from 'react-player'
 import { useEffect, useState } from 'react'
 import { v4 as uuid } from 'uuid';
 import Image from 'next/image';
-import { ArrowDownIcon, PlayIcon, TrashIcon } from '@heroicons/react/24/solid'
+import { ArrowDownIcon, CheckIcon, DocumentDuplicateIcon, PlayIcon, TrashIcon } from '@heroicons/react/24/solid'
 
 const MAX_BREAKPOINTS = 20
 
@@ -12,16 +12,15 @@ export default function Looper() {
 
     const [url, setUrl] = useState('https://www.youtube.com/watch?v=08nggMRgCFI')
     const [inputUrl, setInputUrl] = useState('')
+    const [shareUrl, setShareUrl] = useState('')
     const [breakpoints, setBreakpoints] = useState([])
     const [player, setPlayer] = useState(null)
-    const [domLoaded, setDomLoaded] = useState(false);
+    const [domLoaded, setDomLoaded] = useState(false)
+    const [copied, setCopied] = useState(false)
 
     useEffect(() => {
         setDomLoaded(true);
-
-        // console.log(document.location);
         let params = (new URL(document.location.href)).searchParams;
-        console.log(params)
         const qUrl = params.get('url')
         if (qUrl !== null) {
             setUrl(qUrl)
@@ -56,6 +55,7 @@ export default function Looper() {
             name: '',
         }
         setBreakpoints((prev) => [...prev, breakpoint])
+        setCopied(false)
     }
 
     ref = (reactPlayer) => {
@@ -73,11 +73,13 @@ export default function Looper() {
         return (e) => {
             const updated = breakpoints.filter((item) => item.id !== id)
             setBreakpoints(updated)
+            setCopied(false)
         }
     }
 
     var clear = (e) => {
         setBreakpoints([])
+        setCopied(false)
     }
 
     var msToTime = milliseconds => {
@@ -86,19 +88,19 @@ export default function Looper() {
 
     var loadUrl = (e) => {
         setUrl(inputUrl)
+        setBreakpoints([])
+        setCopied(false)
     }
 
     var setBreakpointName = (id) => {
         return (e) => {
-            e.preventDefault()
-            for (var i = 0; i < breakpoints.length; i++) {
-                var b = breakpoints[i]
-                if (b.id != id) {
-                    continue
-                }
-                b.name = e.target.value
-            }
+            const index = breakpoints.findIndex(obj => obj.id == id)
+            console.log('b', breakpoints[index])
+            console.log(e.target.value)
+            breakpoints[index].name = e.target.value
+            console.log('a', breakpoints[index])
             setBreakpoints(breakpoints)
+            setCopied(false)
         }
     }
 
@@ -110,18 +112,24 @@ export default function Looper() {
         const query = new URLSearchParams(params);
         const shareUrl = `${window.location.origin}/?${query.toString()}`
         navigator.clipboard.writeText(shareUrl)
+        setShareUrl(shareUrl)
+        setCopied(true)
     }
 
-    var handleInputUrl = (e) => setInputUrl(e.target.value)
+    var handleInputUrl = (e) => {
+        setInputUrl(e.target.value)
+    }
 
   return (
     <main className="space-y-12 mx-4 md:mx-24 flex flex-row">
       <section className="mx-4 px-4 border-r-2">
+        <h2 className="text-2xl pt-8">Paste YouTube URL</h2>
         <div className="flex my-4">
             <input
-            className="w-full my-3 rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+            className="w-full my-3 rounded-md border border-[#e0e0e0] py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
             type="text"
-            placeholder="Paste YouTube URL, example: https://www.youtube.com/watch?v=08nggMRgCFI"
+            defaultValue="https://www.youtube.com/watch?v=08nggMRgCFI"
+            placeholder="paste URL here..."
             onChange={handleInputUrl}
             />
             <button
@@ -170,22 +178,35 @@ export default function Looper() {
                 </ol>
             </div>
         </section>
-        <section>
-            <button
-                className="rounded ml-4 py-2 px-4 bg-transparent border border-indigo-500 text-indigo-500 hover:text-indigo-600"
-                onClick={capture}>
-                capture
-            </button>
-            <button
-                className="rounded ml-4 py-2 px-4 bg-transparent border text-gray-400 border-gray-400 hover:text-gray-600"
-                onClick={clear}>
-                clear
-            </button>
-            <button
-                className="rounded ml-4 py-2 px-4 bg-transparent border text-emerald-400 border-emerald-400"
-                onClick={share}>
-                share
-            </button>
+        <hr className="my-7"></hr>
+        <section className="my-2">
+            <div>
+                <button
+                    className="rounded mx-2 py-2 px-4 bg-transparent border border-indigo-500 text-indigo-500 hover:text-indigo-600"
+                    onClick={capture}>
+                    capture
+                </button>
+                <button
+                    className="rounded mx-2 py-2 px-4 bg-transparent border text-gray-400 border-gray-400 hover:text-gray-600"
+                    onClick={clear}>
+                    clear
+                </button>
+                <button
+                    className="rounded mx-2 py-2 px-4 bg-transparent border text-sky-400 border-sky-400 hover:border-sky-500 hover:text-sky-500 focus:bg-sky-500 focus:text-white"
+                    onClick={share}>
+                    {copied ? 'copied to clipboard!' : 'share'}
+                </button>
+            </div>
+            {copied && (
+            <div className="m-2 flex">
+                <input className="font-light text-gray-500 py-2 px-4 border border-sky-300 rounded-l" type="text" value={shareUrl}/>
+                <button
+                    className="rounded-r py-2 px-4 bg-transparent border border-sky-300 bg-sky-300 hover:border-sky-400 hover:bg-sky-400"
+                    onClick={share}>
+                    {copied ? <CheckIcon className="h-6 w-6 text-white"/> : <DocumentDuplicateIcon className="h-6 w-6 text-white" />}
+                </button>
+            </div>
+            )}
         </section>
         <hr className="my-7"></hr>
         <section className="mx-4 px-4">
@@ -198,7 +219,7 @@ export default function Looper() {
                         type="text"
                         placeholder="breakpoint name..."
                         className="font-light py-2 px-4"
-                        // value={breakpoint.name}
+                        defaultValue={breakpoint.name}
                         onChange={setBreakpointName(breakpoint.id)}
                     />
                     <p className="font-light text-gray-400 py-2 px-4">{time}</p>
