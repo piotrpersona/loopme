@@ -60,28 +60,7 @@ export default function Looper() {
     }
 
     var msToTime = milliseconds => {
-        if (milliseconds == 0) {
-            return '00:00.000'
-        }
-        if (milliseconds < 1000) {
-            return `00:00.${milliseconds}`
-        }
-        var seconds = Math.floor(milliseconds / 1000)
-        if (seconds < 60) {
-            if (seconds < 10) {
-                return `00:0${seconds}.${milliseconds-seconds*1000}`
-            }
-            return `00:${seconds}.${milliseconds-seconds*1000}`
-        }
-        const minutes = Math.floor(seconds / 60)
-        seconds = seconds - minutes*60
-        if (seconds < 10) {
-            seconds = `0${seconds}`
-        }
-        if (minutes < 10) {
-            return `0${minutes}:${seconds}.${milliseconds-minutes*60*1000-seconds*1000}`
-        }
-        return `${minutes}:${seconds}.${milliseconds-seconds*1000}`
+        return new Date(milliseconds).toISOString().slice(14, -1); 
     }
 
     var loadUrl = (e) => {
