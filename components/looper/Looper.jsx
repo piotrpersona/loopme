@@ -18,6 +18,26 @@ export default function Looper() {
 
     useEffect(() => {
         setDomLoaded(true);
+
+        // console.log(document.location);
+        let params = (new URL(document.location.href)).searchParams;
+        console.log(params)
+        const qUrl = params.get('url')
+        if (qUrl !== null) {
+            setUrl(qUrl)
+        }
+        const qBreakpoints = params.get('breakpoints')
+        if (qBreakpoints !== null) {
+            const loadedBreakpoints = qBreakpoints.split(',').map(bstr => {
+                var splitted = bstr.split('-')
+                return {
+                    id: uuid(),
+                    name: splitted[0],
+                    time: splitted[1]
+                }
+            })
+            setBreakpoints(loadedBreakpoints)
+        }
     }, []);
 
     var capture = (e) => {
@@ -83,16 +103,14 @@ export default function Looper() {
     }
 
     var share = (e) => {
-        var query = new URLSearchParams(window.location.href);
         var params = {
             url: url,
             breakpoints: breakpoints.map(b => `${b.name}-${b.time}`).join(','),
         }
-        for (const key in params) {
-            query.set(key, params[key])
-        }
-
-        console.log(query.toString())
+        const query = new URLSearchParams(params);
+        const shareUrl = `${window.location.href}/?${query.toString()}`
+        console.log(shareUrl)
+        navigator.clipboard.writeText(shareUrl)
     }
 
     var handleInputUrl = (e) => setInputUrl(e.target.value)
