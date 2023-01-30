@@ -2,6 +2,8 @@ import React from 'react'
 import ReactPlayer from 'react-player'
 import { useEffect, useState } from 'react'
 import { v4 as uuid } from 'uuid';
+import Image from 'next/image';
+import { ArrowDownIcon, PlayIcon, TrashIcon } from '@heroicons/react/24/solid'
 
 const MAX_BREAKPOINTS = 20
 
@@ -64,7 +66,7 @@ export default function Looper() {
         if (milliseconds < 1000) {
             return `00:00.${milliseconds}`
         }
-        const seconds = Math.floor(milliseconds / 1000)
+        var seconds = Math.floor(milliseconds / 1000)
         if (seconds < 60) {
             if (seconds < 10) {
                 return `00:0${seconds}.${milliseconds-seconds*1000}`
@@ -72,8 +74,12 @@ export default function Looper() {
             return `00:${seconds}.${milliseconds-seconds*1000}`
         }
         const minutes = Math.floor(seconds / 60)
+        seconds = seconds - minutes*60
+        if (seconds < 10) {
+            seconds = `0${seconds}`
+        }
         if (minutes < 10) {
-            return `0${minutes}:${seconds-minutes*60}.${milliseconds-seconds*1000}`    
+            return `0${minutes}:${seconds}.${milliseconds-minutes*60*1000-seconds*1000}`
         }
         return `${minutes}:${seconds}.${milliseconds-seconds*1000}`
     }
@@ -95,9 +101,9 @@ export default function Looper() {
             onChange={handleInputUrl}
             />
             <button
-            className="rounded my-3 px-4 bg-transparent border border-blue-500"
+            className="rounded m-3 px-4 bg-violet-400 hover:bg-violet-500"
             onClick={loadUrl}>
-                load
+                <ArrowDownIcon className="h-6 w-6 font-bold text-white"/>
             </button>
         </div>
         <div>
@@ -120,7 +126,7 @@ export default function Looper() {
       </div>
       </section>
       <section className="mx-4 px-4">
-        <section>
+        <section className="my-2">
             <div className="my-4">
                 <h2 className="text-2xl py-2">Manual</h2>
                 <ol className="list-decimal">
@@ -128,8 +134,8 @@ export default function Looper() {
                         [
                             'Play the video',
                             'Click "capture" to add new breakpoint',
-                            'Click "play" to start the video from selected breakpoint',
-                            'Click "remove" to delete breakpoint or "clear" to delete all breakpoints',
+                            'Click play button to start the video from selected breakpoint',
+                            'Click trash can button to delete breakpoint or "clear" to delete all breakpoints',
                             'Use player to navigate the video'
                         ].map((text,index) => (
                             <li key={index} className="py-1">
@@ -139,13 +145,15 @@ export default function Looper() {
                     }
                 </ol>
             </div>
+        </section>
+        <section>
             <button
-                className="rounded ml-4 py-2 px-4 bg-transparent border border-blue-500"
+                className="rounded ml-4 py-2 px-4 bg-transparent border border-indigo-500 text-indigo-500 hover:text-indigo-600"
                 onClick={capture}>
                 capture
             </button>
             <button
-                className="rounded ml-4 py-2 px-4 bg-transparent border border-grey-900"
+                className="rounded ml-4 py-2 px-4 bg-transparent border text-gray-400 border-gray-400 hover:text-gray-600"
                 onClick={clear}>
                 clear
             </button>
@@ -155,23 +163,23 @@ export default function Looper() {
         {breakpoints.map((breakpoint, index) => {
             const time = msToTime(Math.floor(breakpoint.time * 1000));
             return (
-                <div key={breakpoint.id} className="flex mx-4 py-2">
-                    <p className="text-gray-700 py-2 px-4">{index+1}.</p>
+                <div key={breakpoint.id} className="flex mx-2 py-1">
+                    <p className="text-gray-700 py-2 px-1">{index+1}.</p>
                     <input
                         type="text"
                         placeholder="breakpoint name..."
-                        className="font-light text-gray-400 py-2 px-4 border border-[#e0e0e0] rounded-md"
+                        className="font-light py-2 px-4"
                     />
                     <p className="font-light text-gray-400 py-2 px-4">{time}</p>
                     <button
-                        className="rounded py-2 px-4 bg-transparent border border-blue-500"
+                        className="mx-1 py-2 px-4 border rounded"
                         onClick={playFrom(breakpoint.time)}>
-                        play
+                        <PlayIcon className="h-6 w-6 text-emerald-300 hover:text-emerald-500"/>
                     </button>
                     <button
-                        className="rounded py-2 px-4 bg-transparent border border-red-500"
+                        className="mx-1 py-2 px-4 border rounded"
                         onClick={remove(breakpoint.id)}>
-                        remove
+                        <TrashIcon className="h-6 w-6 text-gray-400 hover:text-indigo-500"/>
                     </button>
                 </div>
             )
