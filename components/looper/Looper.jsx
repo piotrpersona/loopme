@@ -108,8 +108,7 @@ export default function Looper() {
             breakpoints: breakpoints.map(b => `${b.name}-${b.time}`).join(','),
         }
         const query = new URLSearchParams(params);
-        const shareUrl = `${window.location.href}/?${query.toString()}`
-        console.log(shareUrl)
+        const shareUrl = `${window.location.origin}/?${query.toString()}`
         navigator.clipboard.writeText(shareUrl)
     }
 
