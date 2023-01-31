@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react'
 import { v4 as uuid } from 'uuid';
 import Image from 'next/image';
 import { ArrowDownIcon, CheckIcon, DocumentDuplicateIcon, PlayIcon, TrashIcon } from '@heroicons/react/24/solid'
+import hash from "object-hash";
 
+const LOCAL_STORAGE_SAVE_KEY = "loopme.saved"
 const MAX_BREAKPOINTS = 20
 
 export default function Looper() {
@@ -17,6 +19,7 @@ export default function Looper() {
     const [player, setPlayer] = useState(null)
     const [domLoaded, setDomLoaded] = useState(false)
     const [copied, setCopied] = useState(false)
+    const [saved, setSaved] = useState(false)
 
     useEffect(() => {
         setDomLoaded(true);
@@ -95,10 +98,7 @@ export default function Looper() {
     var setBreakpointName = (id) => {
         return (e) => {
             const index = breakpoints.findIndex(obj => obj.id == id)
-            console.log('b', breakpoints[index])
-            console.log(e.target.value)
             breakpoints[index].name = e.target.value
-            console.log('a', breakpoints[index])
             setBreakpoints(breakpoints)
             setCopied(false)
         }
@@ -118,6 +118,35 @@ export default function Looper() {
 
     var handleInputUrl = (e) => {
         setInputUrl(e.target.value)
+    }
+
+    var getSaved = () => {
+        var saved = {}
+        var storageSaved = localStorage.getItem(LOCAL_STORAGE_SAVE_KEY)
+        if (storageSaved !== null) {
+            saved = JSON.parse(storageSaved)
+        }
+        return saved
+    }
+
+    var save = (e) => {
+        var data = {
+            url: url,
+            breakpoints: breakpoints.map(b => {
+                return {
+                    time: b.time,
+                    name: b.name
+                }
+            })
+        }
+        var saved = getSaved()
+        saved[hash(data)] = data
+        localStorage.setItem(LOCAL_STORAGE_SAVE_KEY, JSON.stringify(saved));
+    }
+
+    var browse = (e) => {
+        var saved = getSaved()
+        console.log(saved)
     }
 
   return (
@@ -193,6 +222,16 @@ export default function Looper() {
                     className="rounded mx-2 py-2 px-4 bg-transparent border text-sky-400 border-sky-400 hover:border-sky-500 hover:text-sky-500 focus:bg-sky-500 focus:text-white"
                     onClick={share}>
                     {copied ? 'copied to clipboard!' : 'share'}
+                </button>
+                <button
+                    className="rounded mx-2 py-2 px-4 bg-transparent border text-indigo-400 border-indigo-400 hover:border-indigo-500 hover:text-indigo-500 focus:bg-indigo-500 focus:text-white"
+                    onClick={save}>
+                    {saved ? 'saved' : 'save'}
+                </button>
+                <button
+                    className="rounded mx-2 py-2 px-4 bg-transparent border text-indigo-400 border-indigo-400 hover:border-indigo-500 hover:text-indigo-500 focus:bg-indigo-500 focus:text-white"
+                    onClick={browse}>
+                    browse saved
                 </button>
             </div>
             {copied && (
