@@ -3,6 +3,7 @@ import ReactPlayer from 'react-player'
 import { useEffect, useState } from 'react'
 import { v4 as uuid } from 'uuid';
 import { ArrowDownIcon, CheckIcon, DocumentDuplicateIcon, PlayIcon, TrashIcon } from '@heroicons/react/24/solid'
+import { QuestionMarkCircleIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import hash from "object-hash";
 import Records from '../records/Records'
 
@@ -22,6 +23,7 @@ export default function Looper() {
     const [displaySavePane, setDisplaySavePane] = useState(false)
     const [savedRecords, setSavedRecords] = useState({})
     const [recordName, setRecordName] = useState('')
+    const [displayHelp, setDisplayHelp] = useState(false)
 
     useEffect(() => {
         setDomLoaded(true);
@@ -183,9 +185,17 @@ export default function Looper() {
         }
     }
 
+    var showHelp = (e) => {
+        setDisplayHelp(true)
+    }
+
+    var hideHelp = (e) => {
+        setDisplayHelp(false)
+    }
+
     return (
         <main className="space-y-12 mx-4 md:mx-24 flex flex-row">
-            <section className="mx-4 mt-8 px-4 border-r-2">
+            <section id="playerPane" className="mx-4 mt-8 px-4 border-r-2">
                 <h2 className="text-2xl">Paste YouTube URL</h2>
                 <div className="flex my-4">
                     <input
@@ -220,27 +230,40 @@ export default function Looper() {
                     )}
                 </div>
             </section>
-            <section className="mx-4 mt-8 px-4">
-                <section className="">
-                    <h2 className="text-2xl py-2">Manual</h2>
-                    <ol className="list-decimal">
-                        {
-                            [
-                                'Play the video',
-                                'Click "capture" to add new breakpoint',
-                                'Click play button to start the video from selected breakpoint',
-                                'Click trash can button to delete breakpoint or "clear" to delete all breakpoints',
-                                'Use player to navigate the video'
-                            ].map((text, index) => (
-                                <li key={index} className="py-1">
-                                    {text}
-                                </li>
-                            ))
-                        }
-                    </ol>
-                </section>
-                <hr className="my-7"></hr>
-                <section className="my-2">
+            <section id="helpPane" className="mx-4 mt-8 px-4">
+                {displayHelp && (
+                    <section className="">
+                        <button
+                            className="rounded mx-2 py-2 px-4 bg-transparent border text-indigo-400 border-indigo-400 hover:border-indigo-500 hover:text-indigo-500 focus:bg-indigo-500 focus:text-white"
+                            onClick={hideHelp}>
+                            <XMarkIcon className="h-6 w-6 text-gray-400 hover:text-indigo-500" />
+                        </button>
+                        <h2 className="text-2xl py-2">Manual</h2>
+                        <ol className="list-decimal">
+                            {
+                                [
+                                    'Play the video',
+                                    'Click "capture" to add new breakpoint',
+                                    'Click play button to start the video from selected breakpoint',
+                                    'Click trash can button to delete breakpoint or "clear" to delete all breakpoints',
+                                    'Use player to navigate the video'
+                                ].map((text, index) => (
+                                    <li key={index} className="py-1">
+                                        {text}
+                                    </li>
+                                ))
+                            }
+                        </ol>
+                    </section>
+                )}
+                <section id="controlsPane" className="my-2">
+                    <div>
+                        <button
+                            className="rounded mx-2 py-2 px-4 bg-transparent border text-indigo-400 border-indigo-400 hover:border-indigo-500 hover:text-indigo-500 focus:bg-indigo-500 focus:text-white"
+                            onClick={showHelp}>
+                            <QuestionMarkCircleIcon className="h-6 w-6 text-gray-400 hover:text-indigo-500" />
+                        </button>
+                    </div>
                     <div>
                         <button
                             className="rounded mx-2 py-2 px-4 bg-transparent border border-indigo-500 text-indigo-500 hover:text-indigo-600"
@@ -281,7 +304,7 @@ export default function Looper() {
                     {displaySavePane && (
                         <section>
                             <div>
-                                <input className="font-light text-gray-500 py-2 px-4 border border-sky-300 rounded-l" type="text" placeholder="name" onChange={handleSaveRecordName}/>
+                                <input className="font-light text-gray-500 py-2 px-4 border border-sky-300 rounded-l" type="text" placeholder="name" onChange={handleSaveRecordName} />
                                 <button
                                     className="rounded mx-2 py-2 px-4 bg-transparent border text-indigo-400 border-indigo-400 hover:border-indigo-500 hover:text-indigo-500 focus:bg-indigo-500 focus:text-white"
                                     onClick={handleSaveRecord}>

@@ -1,9 +1,5 @@
 import React from 'react'
-import { useEffect, useState } from 'react'
-import { v4 as uuid } from 'uuid';
 import { ArrowDownCircleIcon, TrashIcon } from '@heroicons/react/24/solid'
-
-const MAX_BREAKPOINTS = 20
 
 export default function Records({ records }) {
   return (
